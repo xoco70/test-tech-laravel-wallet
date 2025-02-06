@@ -10,6 +10,7 @@ class DashboardController
 {
     public function __invoke(Request $request)
     {
+//        dd($request->user()->wallet);
         $transactions = $request->user()->wallet->transactions()->with('transfer')->orderByDesc('id')->get();
         $balance = $request->user()->wallet->balance;
 
