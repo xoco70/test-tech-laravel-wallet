@@ -13,7 +13,8 @@ class SendMoneyController
     public function __invoke(SendMoneyRequest $request, PerformWalletTransfer $performWalletTransfer)
     {
         $recipient = $request->getRecipient();
-
+        $sender = $request->user();
+        $sender->notifyIfLowBalance();
         try {
             $performWalletTransfer->execute(
                 sender: $request->user(),

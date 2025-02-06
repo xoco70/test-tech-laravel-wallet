@@ -13,13 +13,13 @@ class SendMoneyController
     public function __invoke(SendMoneyRequest $request, PerformWalletTransfer $performWalletTransfer): Response
     {
         $recipient = $request->getRecipient();
-
         $performWalletTransfer->execute(
             sender: $request->user(),
             recipient: $recipient,
             amount: $request->input('amount'),
             reason: $request->input('reason'),
         );
+
 
         return response()->noContent(201);
     }
