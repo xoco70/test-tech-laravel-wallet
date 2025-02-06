@@ -16,6 +16,63 @@
                 </div>
             </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
+                <h2 class="text-xl font-bold mb-6">@lang('Recurrent-transaction')</h2>
+                <form method="POST" action="{{ route('recurring-transfer.index') }}" class="space-y-4">
+                    @csrf
+
+                    @if (session('money-sent-status') === 'success')
+                        <div class="p-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+                            <span class="font-medium">@lang('Money sent!')</span>
+                            @lang(':amount were successfully sent to :name.', ['amount' => Number::currencyCents(session('money-sent-amount', 0)), 'name' => session('money-sent-recipient-name')])
+                        </div>
+                    @elseif (session('money-sent-status') === 'insufficient-balance')
+                        <div class="p-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                            <span class="font-medium">@lang('Insufficient balance!')</span>
+                            @lang('You can\'t send :amount to :name.', ['amount' => Number::currencyCents(session('money-sent-amount', 0)), 'name' => session('money-sent-recipient-name')])
+                        </div>
+                    @endif
+
+                    <div>
+                        <x-input-label for="recipient_email" :value="__('Recipient email')" />
+                        <x-text-input id="recipient_email"
+                                      class="block mt-1 w-full"
+                                      type="email"
+                                      name="recipient_email"
+                                      :value="old('recipient_email')"
+                                      required />
+                        <x-input-error :messages="$errors->get('recipient_email')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="amount" :value="__('Amount (€)')" />
+                        <x-text-input id="amount"
+                                      class="block mt-1 w-full"
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      :value="old('amount')"
+                                      name="amount"
+                                      required />
+                        <x-input-error :messages="$errors->get('amount')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="reason" :value="__('Reason')" />
+                        <x-text-input id="reason"
+                                      class="block mt-1 w-full"
+                                      type="text"
+                                      :value="old('reason')"
+                                      name="reason"
+                                      required />
+                        <x-input-error :messages="$errors->get('reason')" class="mt-2" />
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <x-primary-button>
+                            {{ __('Send my money !') }}
+                        </x-primary-button>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
                 <h2 class="text-xl font-bold mb-6">@lang('Send money to a friend')</h2>
                 <form method="POST" action="{{ route('send-money') }}" class="space-y-4">
                     @csrf
